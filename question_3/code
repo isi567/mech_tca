@@ -1,0 +1,28 @@
+#include <LiquidCrystal.h>
+
+// Initialise LCD pins
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+const int voltagePin = A0;
+
+void setup() {
+  lcd.begin(16, 2);
+  lcd.clear();
+}
+
+void loop() {
+  // Read and calculate voltage natively
+  int rawVolt = analogRead(voltagePin);
+  float voltage = (rawVolt / 1023.0) * 5.0;
+
+  // Display clean single-variable data
+  lcd.setCursor(0, 0);
+  lcd.print("Digital Voltmeter");
+  
+  lcd.setCursor(0, 1);
+  lcd.print("Volt: ");
+  lcd.print(voltage, 2);
+  lcd.print(" V   "); // Spaces clear out any trailing digits
+
+  delay(150); 
+}
