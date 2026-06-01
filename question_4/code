@@ -1,0 +1,28 @@
+#include <Adafruit_NeoPixel.h>
+
+const int ledPin = 6;       // Pin connected to NeoPixel DIN
+const int numLeds = 12;     // Number of LEDs in your strip
+
+// Initialise the NeoPixel strip object
+Adafruit_NeoPixel strip(numLeds, ledPin, NEO_GRB + NEO_KHZ800);
+
+void setup() {
+  strip.begin();            // Wake up the NeoPixel strip
+  strip.show();             // Turn all LEDs off immediately 
+  strip.setBrightness(50);  // Set safe brightness level (0 to 255)
+}
+
+void loop() {
+  // Cycle colours across the color wheel (0 to 65536)
+  for (long firstPixelHue = 0; firstPixelHue < 5 * 65536; firstPixelHue += 256) {
+    for (int i = 0; i < strip.numPixels(); i++) {
+      // Offset each individual pixel's hue to spread the rainbow across the strip
+      int pixelHue = firstPixelHue + (i * 65536L / strip.numPixels());
+      
+      // Pack the colour and apply a correction for vibrant rendering
+      strip.setPixelColor(i, strip.gamma32(strip.ColorHSV(pixelHue)));
+    }
+    strip.show(); // Push the new colour scheme live to the strip
+    delay(10);    // Adjust this number to make the rainbow spin faster or slower
+  }
+}
