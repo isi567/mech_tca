@@ -1,0 +1,45 @@
+// Pin definitions
+const int potPin = A0;       // Potentiometer wiper for speed
+const int switchPin = 2;     // Slide switch common pin for direction
+const int enablePin = 6;     // H-Bridge Speed pin (PWM)
+const int motorInput1 = 7;   // H-Bridge Direction pin 1
+const int motorInput2 = 8;   // H-Bridge Direction pin 2
+
+void setup() {
+  // Configure control pins as outputs
+  pinMode(enablePin, OUTPUT);
+  pinMode(motorInput1, OUTPUT);
+  pinMode(motorInput2, OUTPUT);
+  
+  // Configure the direction switch as an input
+  pinMode(switchPin, INPUT);
+}
+
+void loop() {
+  // Direction control
+  // Read whether the physical switch is flipped to HIGH (5V) or LOW (GND)
+  int switchState = digitalRead(switchPin);
+  
+  if (switchState == HIGH) {
+    // Spin Clockwise
+    digitalWrite(motorInput1, HIGH);
+    digitalWrite(motorInput2, LOW);
+  } 
+  else {
+    // Spin Counter-Clockwise
+    digitalWrite(motorInput1, LOW);
+    digitalWrite(motorInput2, HIGH);
+  }
+
+  // Speed control
+  // Read the potentiometer value (ranges from 0 to 1023)
+  int potValue = analogRead(potPin);          
+  
+  // Convert the 0-1023 value to a 0-255 value for PWM speed control
+  int motorSpeed = map(potValue, 0, 1023, 0, 255); 
+  
+  // Send the speed value to the L293D enable pin
+  analogWrite(enablePin, motorSpeed);         
+  
+  delay(10); // Short delay for stability
+}
